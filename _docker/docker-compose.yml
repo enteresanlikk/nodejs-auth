@@ -1,0 +1,43 @@
+version: "3.8"
+
+name: nodejs-auth
+
+services:
+  s_mongo:
+    container_name: c_mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - v_mongo:/data/db
+      - ./mongodb-init.js:/docker-entrypoint-initdb.d/mongodb-init.js:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: nodejsauth
+
+  s_rabbitmq:
+    container_name: c_rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - v_rabbitmq:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  s_redis:
+    container_name: c_redis
+    image: redis
+    command: redis-server --requirepass Ub56BCDmwMtyKsdfec
+    ports:
+      - "6379:6379"
+    volumes:
+      - v_redis:/data
+
+volumes:
+  v_mongo: {}
+  v_rabbitmq: {}
+  v_redis: {}
