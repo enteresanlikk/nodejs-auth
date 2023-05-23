@@ -8,7 +8,11 @@ const generate = (payload, secret, options = {}) => {
 };
 
 const verify = (token, secret, options = {}) => {
-    return jwt.verify(token, secret, options);
+    try {
+        return jwt.verify(token, secret, options);
+    } catch (error) {
+        return false;
+    }
 };
 
 module.exports = {

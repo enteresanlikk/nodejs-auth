@@ -7,10 +7,12 @@ module.exports = {
         already_exists: 'user_already_exists',
         success_created: 'user_success_created',
         error_created: 'user_error_created',
-        email_not_verified: 'user_email_not_verified',
         send_reset_password_link: 'user_send_reset_password_link',
         password_updated: 'user_password_updated',
-        error_password_updated: 'user_error_password_updated'
+        error_password_updated: 'user_error_password_updated',
+        error_email_verified: 'user_error_email_verified',
+        email_verified: 'user_email_verified',
+        send_verify_email: 'user_send_verify_email'
     },
     auth: {
         unauthorized: 'auth_unauthorized',

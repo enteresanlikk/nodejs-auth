@@ -8,8 +8,11 @@ const router = express.Router();
 
 router.post('/login', authValidation.login, validationMiddleware, errorHandler(authController.login));
 router.post('/register', authValidation.register, validationMiddleware, errorHandler(authController.register));
+
 router.post('/forgot-password', authValidation.forgotPassword, validationMiddleware, errorHandler(authController.forgotPassword));
 router.post('/reset-password', authMiddleware, authValidation.resetPassword, validationMiddleware, errorHandler(authController.resetPassword));
-router.post('/verify-email', authMiddleware, errorHandler(authController.verifyEmail));
+
+router.get('/verify-email', authMiddleware, errorHandler(authController.verifyEmail));
+router.post('/verify-email', authMiddleware, errorHandler(authController.sendVerifyEmail));
 
 module.exports = router;

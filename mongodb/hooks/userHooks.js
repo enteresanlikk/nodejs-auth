@@ -11,7 +11,9 @@ module.exports = {
     findOneAndUpdate: async function (next) {
         const user = this._update;
 
-        user.password = await crypto.create(user.password, process.env.CRYPTO_SALT_ROUNDS);
+        if (user.password) {
+            user.password = await crypto.create(user.password, process.env.CRYPTO_SALT_ROUNDS);
+        }
 
         return next();
     }

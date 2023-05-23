@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
 
     if (tokenData == null) return res.status(httpStatus.UNAUTHORIZED).json(new ErrorResult(messages.auth.unauthorized));
 
-    const user = token.verify(tokenData, process.env.JWT_SECRET);
+    const user = token.verify(tokenData, process.env.TOKEN_SECRET);
 
     if (!user) return res.status(httpStatus.UNAUTHORIZED).json(new ErrorResult(messages.auth.unauthorized));
 
