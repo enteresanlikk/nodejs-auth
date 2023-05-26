@@ -1,23 +1,23 @@
 module.exports = {
-    not_found: 'not_found',
-    internal_server_error: 'internal_server_error',
+    not_found: 'Not found',
+    internal_server_error: 'Internal server error',
     user: {
-        not_found: 'user_not_found',
-        found: 'user_found',
-        already_exists: 'user_already_exists',
-        success_created: 'user_success_created',
-        error_created: 'user_error_created',
-        send_reset_password_link: 'user_send_reset_password_link',
-        password_updated: 'user_password_updated',
-        error_password_updated: 'user_error_password_updated',
-        error_email_verified: 'user_error_email_verified',
-        email_verified: 'user_email_verified',
-        send_verify_email: 'user_send_verify_email',
-        token_not_found: 'user_token_not_found',
-        email_already_verified: 'user_email_already_verified'
+        not_found: 'User not found',
+        found: 'User found',
+        already_exists: 'User already exists',
+        success_created: 'User successfully created',
+        error_created: 'Error creating user',
+        send_reset_password_link: 'Reset password link sent',
+        password_updated: 'Password successfully updated',
+        error_password_updated: 'Error updating password',
+        error_email_verified: 'Error verifying email',
+        email_verified: 'Email successfully verified',
+        send_verify_email: 'Verification email sent',
+        token_not_found: 'Token not found or expired',
+        email_already_verified: 'Email already verified',
     },
     auth: {
-        unauthorized: 'auth_unauthorized',
-        forbidden: 'auth_forbidden'
+        unauthorized: 'Unauthorized',
+        forbidden: 'Forbidden'
     }
 };

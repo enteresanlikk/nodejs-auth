@@ -1,12 +1,9 @@
 module.exports = {
-    error: 'validation_error',
-    email: {
-        is_required: 'email_is_required',
-        not_valid: 'email_not_valid'
-    },
+    error: 'Validation error',
+    is_required: field => `${field} is required`,
+    not_valid: field => `${field} is not valid`,
     password: {
-        is_required: 'password_is_required',
-        not_match: 'password_not_match',
-        not_valid: 'password_not_valid'
+        not_match: 'Passwords do not match',
+        not_valid: field => `${field} must contain 1 uppercase, 1 lowercase, 1 number, 1 special character (_.?+&) and min 8 characters`
     }
 };

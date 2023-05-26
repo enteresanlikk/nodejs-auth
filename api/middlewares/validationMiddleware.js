@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
 
     if (errors.isEmpty()) return next();
 
-    const extractedErrors = errors.array().map((error) => ({
+    const extractedErrors = errors.array({ onlyFirstError: true }).map((error) => ({
         field: error.path,
         message: error.msg
     }))
