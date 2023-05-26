@@ -1,5 +1,6 @@
 const { check } = require('express-validator');
 const messages = require('../constants/validationMessages');
+const regexes = require('../constants/regexes');
 
 const authValidation = {
     login: [
@@ -13,6 +14,8 @@ const authValidation = {
             .not()
             .isEmpty()
                 .withMessage(messages.password.is_required)
+            .matches(regexes.password)
+                .withMessage(messages.password.not_valid)
     ],
     register: [
         check('email')
@@ -24,13 +27,17 @@ const authValidation = {
         check('password')
             .not()
             .isEmpty()
-                .withMessage(messages.password.is_required),
+                .withMessage(messages.password.is_required)
+            .matches(regexes.password)
+                .withMessage(messages.password.not_valid),
         check('confirmPassword')
             .not()
             .isEmpty()
                 .withMessage(messages.password.is_required)
             .custom((value, {req}) => value === req.body.password)
                 .withMessage(messages.password.not_match)
+            .matches(regexes.password)
+                .withMessage(messages.password.not_valid)
     ],
     forgotPassword: [
         check('email')
@@ -44,13 +51,17 @@ const authValidation = {
         check('password')
             .not()
             .isEmpty()
-                .withMessage(messages.password.is_required),
+                .withMessage(messages.password.is_required)
+            .matches(regexes.password)
+                .withMessage(messages.password.not_valid),
         check('confirmPassword')
             .not()
             .isEmpty()
                 .withMessage(messages.password.is_required)
             .custom((value, {req}) => value === req.body.password)
                 .withMessage(messages.password.not_match)
+            .matches(regexes.password)
+                .withMessage(messages.password.not_valid)
     ]
 };
 

@@ -6,6 +6,7 @@ module.exports = {
     },
     password: {
         is_required: 'password_is_required',
-        not_match: 'password_not_match'
+        not_match: 'password_not_match',
+        not_valid: 'password_not_valid'
     }
 };
