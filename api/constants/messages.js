@@ -14,7 +14,21 @@ module.exports = {
         email_verified: 'Email successfully verified',
         send_verify_email: 'Verification email sent',
         token_not_found: 'Token not found or expired',
-        email_already_verified: 'Email already verified',
+        email_already_verified: 'Email already verified'
+    },
+    tasks: {
+        not_found: 'Tasks not found',
+        found: 'Tasks found'
+    },
+    task: {
+        not_found: 'Task not found',
+        found: 'Task found',
+        error_created: 'Error creating task',
+        success_created: 'Task successfully created',
+        error_updated: 'Error updating task',
+        success_updated: 'Task successfully updated',
+        error_deleted: 'Error deleting task',
+        success_deleted: 'Task successfully deleted'
     },
     auth: {
         unauthorized: 'Unauthorized',

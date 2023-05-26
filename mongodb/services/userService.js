@@ -18,9 +18,9 @@ const getByEmailAndPassword = async (email, password) => {
 };
 
 const create = async (data) => {
-    const user = new User(data)
+    const user = new User(data);
 
-    return await user.save()
+    return await user.save();
 };
 
 const update = async (id, payload) => await User.findByIdAndUpdate(id, payload, { new: true })

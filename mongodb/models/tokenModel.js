@@ -13,7 +13,8 @@ const tokenSchema = new mongoose.Schema({
     },
     tokenType: {
         type: String,
-        enum: [TOKEN_TYPES.FORGOT_PASSWORD, TOKEN_TYPES.VERIFY_EMAIL],
+        required: true,
+        enum: Object.values(TOKEN_TYPES)
     },
     createdAt: {
         type: Date,
