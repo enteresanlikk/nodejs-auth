@@ -12,7 +12,9 @@ module.exports = {
         error_password_updated: 'user_error_password_updated',
         error_email_verified: 'user_error_email_verified',
         email_verified: 'user_email_verified',
-        send_verify_email: 'user_send_verify_email'
+        send_verify_email: 'user_send_verify_email',
+        token_not_found: 'user_token_not_found',
+        email_already_verified: 'user_email_already_verified'
     },
     auth: {
         unauthorized: 'auth_unauthorized',

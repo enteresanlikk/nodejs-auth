@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const services = require('./services');
+const constants = require('./constants');
 
 const connect = async uri => {
     try {
@@ -15,5 +16,6 @@ const connect = async uri => {
 
 module.exports = {
     connect,
-    services
+    services,
+    constants
 };

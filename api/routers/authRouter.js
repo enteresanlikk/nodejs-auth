@@ -10,9 +10,9 @@ router.post('/login', authValidation.login, validationMiddleware, errorHandler(a
 router.post('/register', authValidation.register, validationMiddleware, errorHandler(authController.register));
 
 router.post('/forgot-password', authValidation.forgotPassword, validationMiddleware, errorHandler(authController.forgotPassword));
-router.post('/reset-password', authMiddleware, authValidation.resetPassword, validationMiddleware, errorHandler(authController.resetPassword));
+router.post('/reset-password/:token', authValidation.resetPassword, validationMiddleware, errorHandler(authController.resetPassword));
 
-router.get('/verify-email', authMiddleware, errorHandler(authController.verifyEmail));
 router.post('/verify-email', authMiddleware, errorHandler(authController.sendVerifyEmail));
+router.get('/verify-email/:token', errorHandler(authController.verifyEmail));
 
 module.exports = router;

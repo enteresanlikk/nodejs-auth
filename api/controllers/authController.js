@@ -1,5 +1,6 @@
 const httpStatus = require('http-status');
-const { services: { UserService } } = require('b-mongodb');
+const crypto = require('crypto');
+const { services: { UserService, TokenService }, constants: { TOKEN_TYPES } } = require('b-mongodb');
 const rabbitmq = require('b-rabbitmq');
 const token = require('b-token');
 const messages = require('../constants/messages');
@@ -13,7 +14,6 @@ module.exports = {
 
         if (!user) return res.status(httpStatus.NOT_FOUND).json(new ErrorResult(messages.user.not_found));
 
-        // TODO: token service add
         const tokenData = token.generate({
             id: user._id
         }, process.env.TOKEN_SECRET);
@@ -38,16 +38,6 @@ module.exports = {
 
         if (!newUser) return res.status(httpStatus.NOT_FOUND).json(new ErrorResult(messages.user.error_created));
 
-        // TODO: token service add
-        const verifyEmailToken = token.generate({
-            id: newUser._id
-        }, process.env.TOKEN_SECRET, { expiresIn: '15m' });
-
-        rabbitmq.queues.verifyEmail.publish({
-            email: newUser.email,
-            link: `${process.env.APP_DOMAIN}/api/auth/verify-email?token=${verifyEmailToken}`,
-        });
-
         return res.status(httpStatus.CREATED).json(new SuccessResult(messages.user.success_created));
     },
     forgotPassword: async (req, res) => {
@@ -56,14 +46,18 @@ module.exports = {
         const user = await UserService.getByEmail(email);
 
         if (user) {
-            // TODO: token service add
-            const verifyEmailToken = token.generate({
-                id: user._id
-            }, process.env.TOKEN_SECRET, { expiresIn: '15m' });
+            let token = await TokenService.getByUserIdAndType(user._id, TOKEN_TYPES.FORGOT_PASSWORD);
+            if(!token) {
+                token = await TokenService.create({
+                    userId: user._id,
+                    token: crypto.randomBytes(64).toString('hex'),
+                    tokenType: TOKEN_TYPES.FORGOT_PASSWORD
+                });
+            }
 
             rabbitmq.queues.forgotPassword.publish({
                 email: user.email,
-                link: `${process.env.APP_DOMAIN}/api/auth/reset-password?token=${verifyEmailToken}`,
+                link: `${process.env.APP_DOMAIN}/api/auth/reset-password/${token.token}`,
             });
         }
 
@@ -71,11 +65,16 @@ module.exports = {
     },
     resetPassword: async (req, res) => {
         const { password } = req.body;
-        const user = req.user;
+        const { token } = req.params;
 
-        const updatedUser = await UserService.update(user.id, { password });
+        const tokenData = await TokenService.getByTokenAndType(token, TOKEN_TYPES.FORGOT_PASSWORD);
+        if (!tokenData) return res.status(httpStatus.NOT_FOUND).json(new ErrorResult(messages.user.token_not_found));
+
+        const updatedUser = await UserService.update(tokenData.userId, { password });
 
         if (!updatedUser) return res.status(httpStatus.NOT_FOUND).json(new ErrorResult(messages.user.error_password_updated));
+
+        await TokenService.deleteById(tokenData._id);
 
         rabbitmq.queues.resetPassword.publish({
             email: updatedUser.email
@@ -88,25 +87,39 @@ module.exports = {
 
         const user = await UserService.getById(id);
         if(user && !user.isEmailVerified) {
-            // TODO: token service add
-            const verifyEmailToken = token.generate({
-                id: user._id
-            }, process.env.TOKEN_SECRET, { expiresIn: '15m' });
+            let token = await TokenService.getByUserIdAndType(user._id, TOKEN_TYPES.VERIFY_EMAIL);
+            if(!token) {
+                token = await TokenService.create({
+                    userId: user._id,
+                    token: crypto.randomBytes(64).toString('hex'),
+                    tokenType: TOKEN_TYPES.VERIFY_EMAIL
+                });
+            }
 
             rabbitmq.queues.verifyEmail.publish({
                 email: user.email,
-                link: `${process.env.APP_DOMAIN}/api/auth/verify-email?token=${verifyEmailToken}`,
+                link: `${process.env.APP_DOMAIN}/api/auth/verify-email/${token.token}`,
             });
         }
 
         return res.status(httpStatus.OK).json(new SuccessResult(messages.user.send_verify_email));
     },
     verifyEmail: async (req, res) => {
-        const user = req.user;
+        const { token } = req.params;
 
-        const updatedUser = await UserService.update(user.id, { isEmailVerified: true });
+        const tokenData = await TokenService.getByTokenAndType(token, TOKEN_TYPES.VERIFY_EMAIL);
+        if (!tokenData) return res.status(httpStatus.NOT_FOUND).json(new ErrorResult(messages.user.token_not_found));
+
+        const user = await UserService.getById(tokenData.userId);
+        if (!user) return res.status(httpStatus.NOT_FOUND).json(new ErrorResult(messages.user.not_found));
+
+        if (user.isEmailVerified) return res.status(httpStatus.BAD_REQUEST).json(new ErrorResult(messages.user.email_already_verified));
+
+        const updatedUser = await UserService.update(user._id, { isEmailVerified: true });
 
         if (!updatedUser) return res.status(httpStatus.NOT_FOUND).json(new ErrorResult(messages.user.error_email_verified));
+
+        await TokenService.deleteById(tokenData._id);
 
         return res.status(httpStatus.OK).json(new SuccessResult(messages.user.email_verified));
     }

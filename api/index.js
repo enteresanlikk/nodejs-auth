@@ -17,7 +17,7 @@ const {
 const app = express();
 const routers = require('./routers');
 const appPort = APP_PORT || 3030;
-const appHost = APP_HOST || '127.0.0.1';
+const appHost = APP_HOST || 'http://localhost';
 
 const limiter = rateLimit({
     windowMs: 60 * 1000,
